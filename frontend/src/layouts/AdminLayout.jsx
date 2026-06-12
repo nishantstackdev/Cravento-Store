@@ -2,7 +2,7 @@ import React from 'react'
 import Header from '../components/admin/Header'
 import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/admin/Sidebar'
-
+import { ToastContainer } from 'react-toastify'
 
 
 export default function AdminLayout() {
@@ -15,6 +15,18 @@ export default function AdminLayout() {
           <Outlet />
         </main>
       </div>
+      <ToastContainer 
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   )
 }

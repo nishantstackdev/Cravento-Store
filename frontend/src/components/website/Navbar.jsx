@@ -22,7 +22,7 @@ export default function Navbar() {
             <span className="text-emerald-600">|</span>
             <a href="#" className="hover:text-white transition">Help Center</a>
             <span className="text-emerald-600">|</span>
-            
+
             {/* Language Selector */}
             <div className="flex items-center gap-1 cursor-pointer hover:text-white transition">
               <span className="inline-block w-4 h-3 bg-blue-900 border border-white relative overflow-hidden">
@@ -35,7 +35,7 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
             </div>
-            
+
             {/* Currency Selector */}
             <div className="flex items-center gap-1 cursor-pointer hover:text-white transition">
               <span>$ USD</span>
@@ -49,33 +49,27 @@ export default function Navbar() {
 
       {/* --- Main Header Area --- */}
       <div className="bg-white border-b border-gray-100 px-4 py-4 md:py-6">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-4 lg:gap-6">
-          
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 lg:gap-6">
+
           {/* Brand Logo */}
           <div className="flex items-center gap-2 shrink-0">
             {/* Simple SVG icon representing the grocery basket */}
             <div className="w-10 h-10 text-[#008A4B] flex items-center justify-center">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
-                <path d="M19 10H5c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2zm-7 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm0-10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" opacity=".3"/>
-                <path d="M19 8h-2.18c-.33-1.98-1.83-3.6-3.82-3.92V3c0-.55-.45-1-1-1s-1 .45-1 1v1.08c-1.99.32-3.49 1.95-3.82 3.92H5c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-9c0-1.1-.9-2-2-2zm-7-4c1.3 0 2.42.84 2.83 2H9.17c.41-1.16 1.53-2 2.83-2zm7 15H5v-9h14v9z"/>
+                <path d="M19 10H5c-1.1 0-2 .9-2 2v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7c0-1.1-.9-2-2-2zm-7 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm0-10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" opacity=".3" />
+                <path d="M19 8h-2.18c-.33-1.98-1.83-3.6-3.82-3.92V3c0-.55-.45-1-1-1s-1 .45-1 1v1.08c-1.99.32-3.49 1.95-3.82 3.92H5c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-9c0-1.1-.9-2-2-2zm-7-4c1.3 0 2.42.84 2.83 2H9.17c.41-1.16 1.53-2 2.83-2zm7 15H5v-9h14v9z" />
               </svg>
             </div>
             <span className="text-2xl md:text-3xl font-bold text-gray-800 tracking-tight">Cravento</span>
           </div>
 
           {/* Search Bar Wrapper */}
-          <div className="w-full max-w-2xl flex items-center bg-[#F5F5F5] rounded-md border border-gray-100 overflow-hidden">
-            {/* Category Dropdown */}
-            <div className="relative shrink-0 hidden sm:flex items-center gap-2 px-4 py-2.5 text-gray-700 cursor-pointer border-r border-gray-300 hover:bg-gray-100 transition text-sm">
-              <span>All Categories</span>
-              <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
+          <div className="w-full md:flex-1 lg:max-w-2xl flex items-center bg-[#F5F5F5] rounded-md border border-gray-100 overflow-hidden">
+            
             {/* Input Field */}
-            <input 
-              type="text" 
-              placeholder="Search product here..." 
+            <input
+              type="text"
+              placeholder="Search product here..."
               className="w-full bg-transparent px-4 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none"
             />
             {/* Search Button/Icon */}
@@ -87,8 +81,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Actions Block */}
-          <div className="flex items-center justify-center sm:justify-end gap-6 md:gap-8 w-full lg:w-auto shrink-0">
-            
+          <div className="flex items-center justify-center md:justify-end gap-4 md:gap-5 lg:gap-8 w-full md:w-auto shrink-0">
             {/* Support Line */}
             <div className="hidden md:block text-left">
               <div className="text-xs text-gray-500">Need Help?</div>

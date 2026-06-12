@@ -7,6 +7,10 @@ import Dashboard from './admin/Dashboard'
 import ManageProducts from './admin/ManageProducts'
 import Shop from './pages/Shop'
 import Categories from './admin/Categories'
+import Notfound from './pages/Not-found'
+import AddCategory from './admin/AddCategory'
+// 📥 1. EditCategory component ko yahan import karo (apne sahi path ke hisab se)
+import EditCategory from './admin/EditCategory'
 
 export default function App() {
   const allrouter = createBrowserRouter([
@@ -14,43 +18,33 @@ export default function App() {
       path: "/",
       element: <WebsiteLayout />,
       children: [
-        {
-          index: true, 
-          element: <Home />
-        },
-        {
-          path: "products", 
-          element: <Shop />
-        }
+        { index: true, element: <Home /> },
+        { path: "products", element: <Shop /> }
       ]
     },
     {
       path: "/admin",
       element: <AdminLayout />,
       children: [
+        { index: true, element: <Dashboard /> },
+        { path: "products", element: <ManageProducts /> },
+        { path: "categories", element: <Categories /> },
+        { path: "AddCategory", element: <AddCategory /> },
+        
+        // 🔄 2. EDIT CATEGORY KA ROUTE INJECT KIYA (Dynamic Parameter Ke Sath)
         {
-          index: true, 
-          element: <Dashboard />
-        },
-        {
-          path: "products", 
-          element: <ManageProducts />
-        },
-        {
-          path: "categories", 
-          element: <Categories />
+          path: "categories/EditCategory/:category_id",
+          element: <EditCategory />
         }
       ]
     },
     {
       path: "*",
-      element: <h1>Not found</h1>
+      element: <Notfound />
     }
-  ])
+  ]);
   
   return (
     <RouterProvider router={allrouter} />
   )
 }
-  
-
