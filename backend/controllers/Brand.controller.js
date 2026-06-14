@@ -1,50 +1,52 @@
-const CategoryModel = require("../models/Category.model");
-const fs = require("fs"); // 💡 File system import karna zaroori hai images delete karne ke liye
+const BrandModel = require("../models/Brand.model");
+const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose")
 
-const CreateCategory = async (req, res) => {
+const CreateBrand = async (req, res) => {
   try {
+    
     const { name, slug } = req.body;
+    const brandImg = req.files.image;
 
-    if (!name || !slug || !req.files || !req.files.image) {
+    if (!name || !slug || !brandImg) {
       return res.status(400).json({
         message: "All fields are required",
         success: false,
       });
     }
 
-    const CategoryImg = req.files.image;
 
-    const categoryExist = await CategoryModel.findOne({ name });
 
-    if (categoryExist) {
+    const BrandExist = await BrandModel.findOne({ name });
+
+    if (BrandExist) {
       return res.status(400).json({
         message: "Data already exists",
         success: false,
       });
     }
 
-    const uniqueImageName = `${Date.now()}-${CategoryImg.name}`;
+    const uniqueImageName = `${Date.now()}-${brandImg.name}`;
 
     const uploadPath = path.join(
       __dirname,
-      "../public/images/categories/",
+      "../public/images/brand/",
       uniqueImageName,
     );
 
-    CategoryImg.mv(uploadPath, async (err) => {
+    brandImg.mv(uploadPath, async (err) => {
       if (err) {
-        console.error(err);
+        // console.error(err);
         return res.status(500).json({
           success: false,
           message: "File upload failed",
         });
       }
 
-      const dbImagePath = `/images/categories/${uniqueImageName}`;
+      const dbImagePath = `/images/brand/${uniqueImageName}`;
 
-      await CategoryModel.create({
+      await BrandModel.create({
         name,
         slug,
         image: dbImagePath,
@@ -55,6 +57,7 @@ const CreateCategory = async (req, res) => {
         success: true,
       });
     });
+
   } catch (error) {
     console.error(error);
 
@@ -65,16 +68,16 @@ const CreateCategory = async (req, res) => {
   }
 };
 
-const GetCategory = async (req, res) => {
+const GetBrand = async (req, res) => {
   try {
-    const allCategories = await CategoryModel.find();
+    const allBrands = await BrandModel.find();
     res.status(201).json({
       message: "Data found",
       success: true,
-      allCategories,
+      allBrands,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     res.status(500).json({
       message: "Internal Server Error",
       success: false,
@@ -82,14 +85,14 @@ const GetCategory = async (req, res) => {
   }
 };
 
-const GetCategoriesbyId = async (req, res) => {
+const GetBrandsbyId = async (req, res) => {
   try {
     const id = req.params.id
-    const allcategories = await CategoryModel.findById(id)
+    const allBrands = await BrandModel.findById(id)
     res.status(200).json({
       message: "Data found Successfully",
       success: true,
-      allcategories
+      allBrands
     })
   } catch (error) {
     console.log(error);
@@ -100,24 +103,24 @@ const GetCategoriesbyId = async (req, res) => {
   }
 }
 
-const DeleteCategory = async (req, res) => {
+const DeleteBrand = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const category = await CategoryModel.findById(id);
+    const brand = await BrandModel.findById(id);
 
-    if (!category) {
+    if (!brand) {
       return res.status(404).json({
-        message: "Category not found",
+        message: "brand not found",
         success: false,
       });
     }
 
-    if (category.image) {
+    if (brand.image) {
       const absoluteImagePath = path.join(
         __dirname,
-        "../public/images/categories/",
-        category.image,
+        "../public/images/brand/",
+        brand.image,
       );
 
       if (fs.existsSync(absoluteImagePath)) {
@@ -125,10 +128,10 @@ const DeleteCategory = async (req, res) => {
       }
     }
 
-    await CategoryModel.findByIdAndDelete(id);
+    await BrandModel.findByIdAndDelete(id);
 
     return res.status(200).json({
-      message: "Category and its image deleted successfully",
+      message: "Brand and its image deleted successfully",
       success: true,
     });
   } catch (error) {
@@ -140,7 +143,7 @@ const DeleteCategory = async (req, res) => {
 };
 
 
-const updateCategory = async (req, res) => {
+const updateBrand = async (req, res) => {
   try {
 
     const id = req.params.id;
@@ -149,16 +152,16 @@ const updateCategory = async (req, res) => {
     // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
-        message: "Invalid Category ID",
+        message: "Invalid Brand ID",
         success: false
       });
     }
 
-    const iscategoryexist = await CategoryModel.findById(id);
+    const isbrandexist = await BrandModel.findById(id);
 
-    if (!iscategoryexist) {
+    if (!isbrandexist) {
       return res.status(404).json({
-        message: "Category Not Found",
+        message: "brand Not Found",
         success: false
       });
     }
@@ -172,10 +175,10 @@ const updateCategory = async (req, res) => {
       });
     }
 
-    await CategoryModel.findByIdAndUpdate(
+    await BrandModel.findByIdAndUpdate(
       id,
       {
-        [field]: !iscategoryexist[field]
+        [field]: !isbrandexist[field]
       },
       { new: true }
     );
@@ -186,7 +189,7 @@ const updateCategory = async (req, res) => {
     });
 
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     return res.status(500).json({
       message: "Internal Server Error",
@@ -194,17 +197,17 @@ const updateCategory = async (req, res) => {
     });
   }
 };
-const updateCategoryById = async (req, res) => {
+const updateBrandById = async (req, res) => {
   try {
     const { name, slug } = req.body;
     const id = req.params.id;
-    const category_image = req.files ? req.files.image : null;
+    const Brand_image = req.files ? req.files.image : null;
 
-    const iscategoryexist = await CategoryModel.findById(id);
+    const isbrandexist = await BrandModel.findById(id);
 
-    if (!iscategoryexist) {
+    if (!isbrandexist) {
       return res.status(404).json({
-        message: "Category Not found",
+        message: "brand Not found",
         success: false
       });
     }
@@ -213,13 +216,13 @@ const updateCategoryById = async (req, res) => {
     if (name) update.name = name;
     if (slug) update.slug = slug;
 
-    if (category_image) {
+    if (Brand_image) {
 
-      const extension = path.extname(category_image.name)
+      const extension = path.extname(Brand_image.name)
       const image = Date.now() + extension;
 
 
-      const uploadDir = path.join(__dirname, "../public/images/categories");
+      const uploadDir = path.join(__dirname, "../public/images/brand");
 
 
       if (!fs.existsSync(uploadDir)) {
@@ -229,13 +232,13 @@ const updateCategoryById = async (req, res) => {
       const destination = path.join(uploadDir, image);
 
 
-      await category_image.mv(destination);
+      await Brand_image.mv(destination);
 
 
       try {
-        if (iscategoryexist.image) {
+        if (isbrandexist.image) {
 
-          const oldImageName = iscategoryexist.image.split('/').pop();
+          const oldImageName = isbrandexist.image.split('/').pop();
           const oldImagePath = path.join(uploadDir, oldImageName);
 
           if (fs.existsSync(oldImagePath)) {
@@ -248,18 +251,18 @@ const updateCategoryById = async (req, res) => {
       }
 
 
-      update.image = "/images/categories/" + image;
+      update.image = "/images/brand/" + image;
     }
 
-    await CategoryModel.findByIdAndUpdate(id, { $set: update });
+    await BrandModel.findByIdAndUpdate(id, { $set: update });
 
     return res.status(200).json({
-      message: category_image ? "Category Updated Successfully with Image" : "Category Updated Successfully",
+      message: Brand_image ? "Brand Updated Successfully with Image" : "Brand Updated Successfully",
       success: true
     });
 
   } catch (error) {
-    console.error("Pipeline Modification dropped:", error);
+    // console.error("Pipeline Modification dropped:", error);
     return res.status(500).json({
       message: "Internal Server Error",
       success: false
@@ -267,4 +270,4 @@ const updateCategoryById = async (req, res) => {
   }
 };
 
-module.exports = { CreateCategory, GetCategory, GetCategoriesbyId, DeleteCategory, updateCategory, updateCategoryById };
+module.exports = { CreateBrand, GetBrand, GetBrandsbyId, DeleteBrand, updateBrand, updateBrandById };
