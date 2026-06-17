@@ -9,7 +9,7 @@ export async function GetCategories() {
         return { success: false, msg: "Error fetching api", error };
     }
 }
-export async function GetCategoriesbyId(id){
+export async function GetCategoriesbyId(id) {
     try {
         const response = axiosinstance.get(`/category/${id}`)
         return response.data
@@ -20,7 +20,7 @@ export async function GetCategoriesbyId(id){
 export const DeleteCategoryApi = async (id) => {
     try {
         const response = await axiosinstance.delete(`/category/delete/${id}`);
-        return response.data; 
+        return response.data;
     } catch (error) {
         throw error?.response?.data || error;
     }
@@ -35,7 +35,7 @@ export async function GetBrands() {
         return { success: false, msg: "Error fetching api", error };
     }
 }
-export async function GetbrandbyId(id){
+export async function GetbrandbyId(id) {
     try {
         const response = axiosinstance.get(`/brand/${id}`)
         return response.data
@@ -46,8 +46,26 @@ export async function GetbrandbyId(id){
 export const DeletebrandApi = async (id) => {
     try {
         const response = await axiosinstance.delete(`/brand/delete/${id}`);
-        return response.data; 
+        return response.data;
     } catch (error) {
         throw error?.response?.data || error;
     }
 };
+
+export async function GetProducts() {
+    try {
+        const response = await axiosinstance.get("/product")
+        return response.data
+    } catch (error) {
+        console.error("API Fetch Error:", error);
+        return { success: false, msg: "Error fetching api", error };
+    }
+}
+export async function GetproductbyId(id) {
+    try {
+        const response = axiosinstance.get(`/product/${id}`)
+        return response.data
+    } catch (error) {
+        console.log(error)
+    }
+}

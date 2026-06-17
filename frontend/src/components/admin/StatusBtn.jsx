@@ -26,7 +26,9 @@ export default function StatusBtn({ value, id, field, endpoint }) {
     }
     const label = {
         status: ["Active", "Inactive"],
-        is_top: ["Top", "Not Top"]
+        is_top: ["Top", "Not Top"],
+        is_home: ["Home", "Not Home"],
+        is_popular: ["Popular", "Not Popular"]
     }
     const [truelabel, falselabel] = label[field]
     return (

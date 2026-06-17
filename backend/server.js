@@ -5,6 +5,7 @@ const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const Categoryrouter = require('./routers/Category.router');
 const BrandRouter = require('./routers/Brand.router');
+const ProductRouter = require('./routers/Product.router');
 
 const server = express();
 server.use(cors({
@@ -22,6 +23,7 @@ server.use(fileUpload({
 server.use(express.static("public"));
 server.use("/category", Categoryrouter);
 server.use("/brand", BrandRouter);
+server.use("/product",ProductRouter)
 
 
 mongoose.connect(process.env.DATABASE_URL)
