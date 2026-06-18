@@ -1,54 +1,55 @@
-import React, { useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash } from 'lucide-react';
+import axiosinstance, { notify } from '../../helper/helper';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
-import { notify } from '../../helper/helper';
+export default function DeleteBtn({ id, endpoint }) {
+  function deleteHandler() {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) Swal.fire({
 
-export default function DeleteButton({ apiFunction, id, itemName, onSuccess }) {
-  const [isDeleting, setIsDeleting] = useState(false);
+        title: "Deleted!",
+        text: "Your file has been deleted.",
+        icon: "success"
 
-  const handlePurge = async () => {
-    const confirmDelete = window.confirm(
-      `ARE YOU SURE YOU WANT TO DELETE "${itemName.toUpperCase()}"?`
-    );
+      },
+        axiosinstance.delete(`http://localhost:7000/${endpoint}/delete/${id}`)
+          .then((res) => {
+            if (res.data.success) {
+              notify(res?.data?.message, true);
+              window.location.reload();
+            }
+          })
+          .catch((err) => {
+            // console.log(err)
+            const message =
+              err?.response?.data?.message ||
+              err?.message ||
+              "Something went wrong";
 
-    if (!confirmDelete) return;
+            notify(message, false);
+          })
+      );
+    });
 
-    try {
-      setIsDeleting(true); //
-      
-      
-      const response = await apiFunction(id);
-      
-      if (response.success) {
-        notify(response.message || "Record purged successfully.", true);
-        
-        
-        if (onSuccess) onSuccess(id);
-      }
-    } catch (error) {
-      console.error("Purge system failure:", error);
-      const errorMsg = error?.message || "Internal network pipe error during deletion.";
-      notify(errorMsg, false);
-    } finally {
-      setIsDeleting(false); 
-    }
-  };
-
+  }
   return (
     <button
-      onClick={handlePurge}
-      disabled={isDeleting}
-      title={`Delete ${itemName}`}
-      className={`p-2 text-rose-500 hover:text-rose-600 border border-rose-50 dark:border-rose-900/30 hover:bg-rose-50/50 dark:hover:bg-rose-950/50 rounded-xl transition-all shadow-sm ${
-        isDeleting ? 'opacity-50 cursor-not-allowed' : ''
-      }`}
+      type="button"
+      onClick={deleteHandler}
+      className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold uppercase text-red-600 hover:text-white bg-red-50 hover:bg-red-600 rounded-xl transition-all active:scale-95 border border-red-100 hover:border-red-600 cursor-pointer"
     >
-      {isDeleting ? (
-        
-        <div className="w-3.5 h-3.5 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" />
-      ) : (
-        <Trash2 className="w-3.5 h-3.5" />
-      )}
+      {/* Icon component self-closing rahega */}
+      <Trash className="w-4 h-4" />
+      <span>Delete</span>
     </button>
-  );
+  )
 }

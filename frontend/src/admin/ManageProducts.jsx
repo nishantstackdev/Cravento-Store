@@ -6,6 +6,7 @@ import { Edit2, Trash2, Plus, ArrowUpDown, Eye } from 'lucide-react';
 import { notify } from '../helper/helper';
 import StatusBtn from '../components/admin/StatusBtn';
 import ViewProductModal from '../components/admin/ViewProductModal';
+import DeleteBtn from '../components/admin/Deletebutton';
 
 export default function ManageProducts() {
   const [Products, setproducts] = useState([]);
@@ -68,7 +69,7 @@ export default function ManageProducts() {
           <p className="text-[10px] font-bold text-gray-400 tracking-tight mt-0.5 uppercase">Manage product records, pricing, visibility, and warehouse stock</p>
         </div>
         {/* Link updated to AddProduct */}
-        <Link to={"/admin/AddProduct"}>
+        <Link to={"/admin/products/AddProduct"}>
           <button className="flex items-center justify-center gap-2 bg-[#008A5E] hover:bg-[#00734e] text-white text-[10px] font-black tracking-widest uppercase px-5 py-3 rounded-xl transition-all shadow-sm shadow-[#008A5E]/10 self-start sm:self-center">
             <Plus className="w-3.5 h-3.5" />
             <span>ADD NEW PRODUCT</span>
@@ -95,7 +96,6 @@ export default function ManageProducts() {
                         <ArrowUpDown className="w-3 h-3" />
                       </div>
                     </th>
-                    <th className="py-4 px-6">SLUG/ROUTE</th>
                     <th className="py-4 px-6">STATUS</th>
                     <th className="py-4 px-6 text-right">ACTIONS</th>
                   </tr>
@@ -129,10 +129,7 @@ export default function ManageProducts() {
                         </div>
                       </td>
 
-                      {/* COLUMN 3: SLUG */}
-                      <td className="py-4 px-6 whitespace-nowrap font-mono text-gray-500 text-[11px] align-middle">
-                        /{cat.slug}
-                      </td>
+                      
 
                       {/* COLUMN 4: STATUS */}
                       <td className="py-4 px-6 whitespace-nowrap align-middle">
@@ -150,6 +147,8 @@ export default function ManageProducts() {
                       <td className="py-4 px-6 whitespace-nowrap text-right align-middle">
                         <div className="flex items-center justify-end gap-2">
 
+                          <DeleteBtn endpoint="product" id={cat._id}/>
+
                           {/* 👁️ EYE BUTTON - FIXED LOGIC (cat passed instead of prod) */}
                           <button
                             onClick={() => handleViewClick(cat)}
@@ -160,7 +159,7 @@ export default function ManageProducts() {
                           </button>
 
                           {/* 📝 EDIT BUTTON */}
-                          <Link to={`/admin/EditProduct/${cat._id}`}>
+                          <Link to={`/admin/products/EditProduct/${cat._id}`}>
                             <button title="Edit Product" className="p-2 text-emerald-600 hover:text-emerald-700 border border-emerald-50 hover:bg-emerald-50/50 rounded-xl transition-all shadow-sm">
                               <Edit2 className="w-3.5 h-3.5" />
                             </button>

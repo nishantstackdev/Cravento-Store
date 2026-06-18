@@ -75,7 +75,7 @@ export default function ViewProductModal({ isOpen, onClose, product }) {
                       <Activity className="w-2.5 h-2.5 text-emerald-500" /> System Visibility
                     </span>
                     <div className="pt-1">
-                      {_id && <StatusBtn value={is_home} id={_id} field="is_home" endpoint="Product" />}
+                      {_id && <StatusBtn value={is_home} id={_id} field="is_home" endpoint="product" />}
                     </div>
                   </div>
 
@@ -85,7 +85,7 @@ export default function ViewProductModal({ isOpen, onClose, product }) {
                       <Star className="w-2.5 h-2.5 text-purple-500" /> Featured Block
                     </span>
                     <div className="pt-1">
-                      {_id && <StatusBtn value={is_top} id={_id} field="is_top" endpoint="Product" />}
+                      {_id && <StatusBtn value={is_top} id={_id} field="is_top" endpoint="product" />}
                     </div>
                   </div>
 
@@ -95,7 +95,7 @@ export default function ViewProductModal({ isOpen, onClose, product }) {
                       <Flame className="w-2.5 h-2.5 text-red-500" /> Popular Deal
                     </span>
                     <div className="pt-1">
-                      {_id && <StatusBtn value={is_popular} id={_id} field="is_popular" endpoint="Product" />}
+                      {_id && <StatusBtn value={is_popular} id={_id} field="is_popular" endpoint="product" />}
                     </div>
                   </div>
 

@@ -34,29 +34,7 @@ export default function CategoryTable() {
     fetchTableData();
   }, []);
 
-  // 🗑️ 2. Fully Wired Async Delete Execution Layer
-  const handleDelete = async (id, categoryName) => {
-    // Premium dynamic confirm check sequence
-    if (window.confirm(`ARE YOU SURE YOU WANT TO DELETE THE "${categoryName.toUpperCase()}" CATEGORY BLOCK?`)) {
-      try {
-        // Core network call to endpoint backend handler
-        const response = await DeleteCategoryApi(id);
-
-        if (response.success) {
-          notify(response.message || "Data purged successfully.", true);
-
-          // 🔄 UI Matrix Mutation: Filter layout node instantly
-          setCategories((prevCategories) =>
-            prevCategories.filter((cat) => cat._id !== id)
-          );
-        }
-      } catch (error) {
-        console.error("Purge operation dropped:", error);
-        const errorMsg = error?.message || "Internal network pipe error during deletion.";
-        notify(errorMsg, false);
-      }
-    }
-  };
+  
 
   if (loading) {
     return (
@@ -77,7 +55,7 @@ export default function CategoryTable() {
           <h3 className="font-black text-gray-900 text-md tracking-tight uppercase">CATEGORY MATRIX</h3>
           <p className="text-[10px] font-bold text-gray-400 tracking-tight mt-0.5 uppercase">Manage system catalogs, visibility states, and database records</p>
         </div>
-        <Link to={"/admin/AddCategory"}>
+        <Link to={"/admin/categories/AddCategory"}>
           <button className="flex items-center justify-center gap-2 bg-[#008A5E] hover:bg-[#00734e] text-white text-[10px] font-black tracking-widest uppercase px-5 py-3 rounded-xl transition-all shadow-sm shadow-[#008A5E]/10 self-start sm:self-center">
             <Plus className="w-3.5 h-3.5" />
             <span>ADD NEW CATEGORY</span>
@@ -171,14 +149,7 @@ export default function CategoryTable() {
                         </Link>
 
 
-                        <DeleteButton
-                          id={cat._id}
-                          itemName={cat.name}
-                          apiFunction={DeleteCategoryApi}
-                          onSuccess={(deletedId) => {
-                            setCategories((prev) => prev.filter((item) => item._id !== deletedId));
-                          }}
-                        />
+                        <DeleteButton endpoint="category" id={cat._id} />
                       </div>
                     </td>
 

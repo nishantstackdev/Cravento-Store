@@ -2,6 +2,7 @@ import React from 'react'
 import BannerSlider from '../Sections/BannerSection'
 import Posters from '../Sections/Posters'
 import CategoryNav from '../Sections/CategoryNav'
+import TrendingProd from '../Sections/TrendingProd'
 
 
 export default function Home() {
@@ -10,6 +11,7 @@ export default function Home() {
       <BannerSlider />
       <Posters />
       <CategoryNav />
+      <TrendingProd />
     </>
 
   )

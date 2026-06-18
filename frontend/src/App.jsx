@@ -14,6 +14,8 @@ import EditCategory from './admin/EditCategory'
 import Brands from './admin/Brands'
 import AddBrand from './admin/AddBrand'
 import EditBrand from './admin/EditBrand'
+import AddProduct from './admin/AddProduct'
+import EditProduct from './admin/EditProduct'
 
 export default function App() {
   const allrouter = createBrowserRouter([
@@ -33,7 +35,7 @@ export default function App() {
         { path: "products", element: <ManageProducts /> },
         { path: "categories", element: <Categories /> },
         { path: "brands", element: <Brands /> },
-        { path: "AddCategory", element: <AddCategory /> },
+        { path: "categories/AddCategory", element: <AddCategory /> },
         {path: "AddBrand",element: <AddBrand />},
         {
           path: "categories/EditCategory/:category_id",
@@ -42,6 +44,14 @@ export default function App() {
         {
           path: "brands/EditBrand/:brand_id",
           element: <EditBrand />
+        },
+        {
+          path : "products/AddProduct",
+          element : <AddProduct />
+        },
+        {
+          path : "products/EditProduct/:product_id",
+          element : <EditProduct />
         }
       ]
     },

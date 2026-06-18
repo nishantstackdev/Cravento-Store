@@ -18,6 +18,7 @@ const createProduct = async (req, res) => {
 
         const productImage = req.files?.thumbnail;
 
+
         if (
             !name ||
             !slug ||
@@ -43,9 +44,8 @@ const createProduct = async (req, res) => {
             });
         }
 
-        const uniqueName =
-            `${Date.now()}-${productImage.name}`;
 
+        const uniqueName = `${Date.now()}-${productImage.name}`;
         const uploadPath = path.join(
             __dirname,
             "../public/images/product",
@@ -53,9 +53,37 @@ const createProduct = async (req, res) => {
         );
 
         await productImage.mv(uploadPath);
+        const dbImagePath = `/images/product/${uniqueName}`;
 
-        const dbImagePath =
-            `/images/product/${uniqueName}`;
+
+
+        let dbImagesArray = [];
+
+        if (req.files && req.files.images) {
+
+
+            const galleryFiles = Array.isArray(req.files.images)
+                ? req.files.images
+                : [req.files.images];
+
+            for (let i = 0; i < galleryFiles.length; i++) {
+                const singleFile = galleryFiles[i];
+                const uniqueGalleryName = `${Date.now()}-${i}-${singleFile.name}`;
+                const galleryUploadPath = path.join(
+                    __dirname,
+                    "../public/images/product",
+                    uniqueGalleryName
+                );
+
+
+                await singleFile.mv(galleryUploadPath);
+
+
+                dbImagesArray.push(`/images/product/${uniqueGalleryName}`);
+            }
+        }
+
+
 
         await ProductModel.create({
             name,
@@ -67,6 +95,7 @@ const createProduct = async (req, res) => {
             category_id,
             brand_id,
             thumbnail: dbImagePath,
+            images: dbImagesArray,
         });
 
         return res.status(201).json({
@@ -103,7 +132,7 @@ const getProduct = async (req, res) => {
 
 const getProductById = async (req, res) => {
     try {
-        const{id} = req.params
+        const { id } = req.params
         const allProducts = await ProductModel.findById(id)
         return res.status(200).json({
             success: true,
@@ -115,7 +144,8 @@ const getProductById = async (req, res) => {
             success: false,
             message: "Internal Server Error",
         })
-    }}
+    }
+}
 
 const DeleteProduct = async (req, res) => {
     try {
@@ -133,16 +163,18 @@ const DeleteProduct = async (req, res) => {
                 "../public/images/product/",
                 product.thumbnail,
             )
+            if (fs.existsSync(absoluteImagePath)) {
+                fs.unlinkSync(absoluteImagePath);
+            }
         }
-        if (fstat(absoluteImagePath)) {
-            fs.unlinkSync(absoluteImagePath)
-        }
+
         await ProductModel.findByIdAndDelete(id)
         return res.status(200).json({
             success: true,
             message: "Product and its image deleted successfully",
         })
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             success: false,
             message: "Internal Server Error",
@@ -155,7 +187,7 @@ const ProductUpdate = async (req, res) => {
         const { id } = req.params
         const { field } = req.body;
 
-        
+
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({
                 message: "Invalid Product ID",
@@ -170,7 +202,7 @@ const ProductUpdate = async (req, res) => {
             });
         }
         const allowfields = ["status", "is_top", "is_popular", "is_home"];
-        if (allowfields.includes(field)) {
+        if (!allowfields.includes(field)) {
             return res.status(400).json({
                 message: "Bad Request",
                 success: false
@@ -196,5 +228,77 @@ const ProductUpdate = async (req, res) => {
     }
 }
 
+const updateProductById = async (req, res) => {
+    try {
+        const { name, slug } = req.body;
+        const id = req.params.id;
+        const Product_img = req.files ? req.files.thumbnail : null;
 
-module.exports = { createProduct, getProduct, DeleteProduct, ProductUpdate,getProductById};
+        const isProductExist = await ProductModel.findById(id);
+
+        if (!isProductExist) {
+            return res.status(404).json({
+                message: "Product Not found",
+                success: false
+            });
+        }
+
+        const update = {};
+        if (name) update.name = name;
+        if (slug) update.slug = slug;
+
+        if (Product_img) {
+
+            const extension = path.extname(Product_img.name)
+            const image = Date.now() + extension;
+
+
+            const uploadDir = path.join(__dirname, "../public/images/product");
+
+
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+
+            const destination = path.join(uploadDir, image);
+
+
+            await Product_img.mv(destination);
+
+
+            try {
+                if (isProductExist.thumbnail) {
+
+                    const oldImageName = isProductExist.thumbnail.split('/').pop();
+                    const oldImagePath = path.join(uploadDir, oldImageName);
+
+                    if (fs.existsSync(oldImagePath)) {
+                        fs.unlinkSync(oldImagePath);
+                    }
+                }
+            } catch (fsErr) {
+                console.log("Old image file delete match skip:", fsErr.message);
+
+            }
+
+
+            update.thumbnail = "/images/product/" + image;
+        }
+
+        await ProductModel.findByIdAndUpdate(id, { $set: update });
+
+        return res.status(200).json({
+            message: Product_img ? "Product Updated Successfully with Image" : "Product Updated Successfully",
+            success: true
+        });
+
+    } catch (error) {
+        console.error("Pipeline Modification dropped:", error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false
+        });
+    }
+};
+
+module.exports = { createProduct, getProduct, DeleteProduct, ProductUpdate, getProductById, updateProductById };
