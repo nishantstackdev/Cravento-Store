@@ -9,13 +9,13 @@ import Shop from './pages/Shop'
 import Categories from './admin/Categories'
 import Notfound from './pages/Not-found'
 import AddCategory from './admin/AddCategory'
-// 📥 1. EditCategory component ko yahan import karo (apne sahi path ke hisab se)
 import EditCategory from './admin/EditCategory'
 import Brands from './admin/Brands'
 import AddBrand from './admin/AddBrand'
 import EditBrand from './admin/EditBrand'
 import AddProduct from './admin/AddProduct'
 import EditProduct from './admin/EditProduct'
+import ProductDetail from './pages/ProductDetail'
 
 export default function App() {
   const allrouter = createBrowserRouter([
@@ -24,7 +24,9 @@ export default function App() {
       element: <WebsiteLayout />,
       children: [
         { index: true, element: <Home /> },
-        { path: "products", element: <Shop /> }
+        { path: "products", element: <Shop /> },
+        // ⚡ FIXED: Yahan se pehla forward slash (/) hata diya hai taaki nesting sahi chale
+        { path: "product-detail/:id", element: <ProductDetail /> }
       ]
     },
     {
@@ -36,7 +38,7 @@ export default function App() {
         { path: "categories", element: <Categories /> },
         { path: "brands", element: <Brands /> },
         { path: "categories/AddCategory", element: <AddCategory /> },
-        {path: "AddBrand",element: <AddBrand />},
+        { path: "AddBrand", element: <AddBrand /> },
         {
           path: "categories/EditCategory/:category_id",
           element: <EditCategory />
@@ -46,12 +48,12 @@ export default function App() {
           element: <EditBrand />
         },
         {
-          path : "products/AddProduct",
-          element : <AddProduct />
+          path: "products/AddProduct",
+          element: <AddProduct />
         },
         {
-          path : "products/EditProduct/:product_id",
-          element : <EditProduct />
+          path: "products/EditProduct/:product_id",
+          element: <EditProduct />
         }
       ]
     },

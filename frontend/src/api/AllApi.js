@@ -63,7 +63,7 @@ export async function GetProducts() {
 }
 export async function GetproductbyId(id) {
     try {
-        const response = axiosinstance.get(`/product/${id}`)
+        const response = await axiosinstance.get(`/product/${id}`)
         return response.data
     } catch (error) {
         console.log(error)
