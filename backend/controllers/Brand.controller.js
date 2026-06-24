@@ -5,7 +5,7 @@ const mongoose = require("mongoose")
 
 const CreateBrand = async (req, res) => {
   try {
-    
+
     const { name, slug } = req.body;
     const brandImg = req.files.image;
 
@@ -70,7 +70,13 @@ const CreateBrand = async (req, res) => {
 
 const GetBrand = async (req, res) => {
   try {
-    const allBrands = await BrandModel.find();
+    const query = req.query
+    const filter = {}
+    if (query.status) filter.status = query.status === "true"
+    if (query.is_top) filter.is_top = query.is_top === "true"
+    if (query.id) filter._id = query.id
+    // console.log(filter)
+    const allBrands = await BrandModel.find(filter);
     res.status(201).json({
       message: "Data found",
       success: true,

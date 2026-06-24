@@ -17,6 +17,7 @@ import AddProduct from './admin/AddProduct'
 import EditProduct from './admin/EditProduct'
 import ProductDetail from './pages/ProductDetail'
 
+
 export default function App() {
   const allrouter = createBrowserRouter([
     {
@@ -25,8 +26,7 @@ export default function App() {
       children: [
         { index: true, element: <Home /> },
         { path: "products", element: <Shop /> },
-        // ⚡ FIXED: Yahan se pehla forward slash (/) hata diya hai taaki nesting sahi chale
-        { path: "product-detail/:id", element: <ProductDetail /> }
+        { path: "product-detail/:id", element: <ProductDetail /> },
       ]
     },
     {

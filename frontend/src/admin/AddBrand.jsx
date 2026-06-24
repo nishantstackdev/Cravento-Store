@@ -72,7 +72,7 @@ export default function AddBrand() {
     axiosinstance.post("/brand/create", formData)
       .then((res) => {
         if (res.data.success) {
-          notify(res?.data?.message || "Category injected successfully", true);
+          notify(res?.data?.message || "Brand injected successfully", true);
           navigate("/admin/brands");
         }
       })

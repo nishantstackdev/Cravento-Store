@@ -19,3 +19,7 @@
 *{
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
+.image-render-smooth {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}

@@ -2,31 +2,36 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosinstance from "../helper/helper";
 import { GetproductbyId } from "../api/AllApi";
+import ProductImageZoom from "../components/website/ProductImageZoom";
+import AddtoCart from "../components/website/AddtoCart";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // ⚡ Main States
+  // ⚡ Main Dynamic States
   const [product, setProduct] = useState({});
   const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
 
   const baseUrl = "http://localhost:7000";
 
+  // 🔄 Real-time product fetch pipeline linked to the active route ID
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await GetproductbyId(id);
 
-        // ✅ Server response verification & state setting
         if (res && res.allProducts) {
           setProduct(res.allProducts);
 
-          // 🖼️ Initialize main image on page load
+          // 🖼️ Initialize standard thumbnail high-res link
           const initialImg = res.allProducts.thumbnail
-            ? `${baseUrl}${res.allProducts.thumbnail}`
+            ? res.allProducts.thumbnail.startsWith("http")
+              ? res.allProducts.thumbnail
+              : `${baseUrl}${res.allProducts.thumbnail}`
             : "/placeholder.png";
+          
           setSelectedImage(initialImg);
         }
       } catch (err) {
@@ -35,18 +40,20 @@ const ProductDetail = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id]); // 👈 Triggers re-fetch and resets image when id shifts
 
-  // Fallback calculations for main thumbnail string
+  // Safe fallback calculation rules for primary fallback asset strings
   const mainThumbnail = product.thumbnail
-    ? `${baseUrl}${product.thumbnail}`
+    ? product.thumbnail.startsWith("http")
+      ? product.thumbnail
+      : `${baseUrl}${product.thumbnail}`
     : "/placeholder.png";
 
   return (
     <section className="w-full py-12 px-4 max-w-7xl mx-auto bg-white">
       {/* 🧭 Back Navigation Row */}
       <div
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/products")}
         className="flex items-center space-x-2 text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-8 cursor-pointer hover:text-emerald-600 transition-colors w-max"
       >
         <svg
@@ -68,56 +75,63 @@ const ProductDetail = () => {
 
       {/* 🚀 Main Split Grid Structure */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        
         {/* 📸 LEFT PART: Image Gallery Frame Matrix */}
-        <div className="lg:col-span-6 flex flex-col space-y-4">
-          {/* Main big display box */}
-          <div className="w-full aspect-square bg-neutral-50/80 border border-neutral-100 rounded-2xl flex items-center justify-center p-2 relative overflow-hidden">
-            <img
+        <div className="lg:col-span-6 flex flex-col space-y-4 relative z-40">
+          
+          {/* ✅ FIXED MAIN CONTAINER BOX: Configured to support floating overlay blocks */}
+          <div className="w-full aspect-square bg-neutral-50/80 border border-neutral-100/70 rounded-2xl flex items-center justify-center p-4 relative overflow-visible">
+            <ProductImageZoom 
               src={selectedImage || mainThumbnail}
-              alt={product.name || "Product Image"}
-              // ⚡ FIXED: max-w/max-h ko 95% kiya aur w-full h-full ke sath object-contain balance kiya
-              className="w-full h-full max-w-[95%] max-h-[95%] object-contain mix-blend-multiply transition-all duration-300 ease-out"
+              alt={product.name || "Product Image"} 
             />
           </div>
 
-          {/* Bottom Thumbnails Strip Row */}
-          <div className="flex items-center space-x-3 overflow-x-auto pb-1">
-            {/* Standard primary thumbnail */}
+          {/* 🖼️ BOTTOM THUMBNAILS STRIP ROW */}
+          <div className="flex items-center space-x-3 overflow-x-auto pb-2 scrollbar-thin select-none">
+            
+            {/* Primary Main Thumbnail Wrapper */}
             <div
               onClick={() => setSelectedImage(mainThumbnail)}
-              className={`w-20 h-20 bg-neutral-50 border rounded-xl flex items-center justify-center p-2 cursor-pointer flex-shrink-0 transition-all ${
-                selectedImage === mainThumbnail
-                  ? "border-emerald-500 ring-2 ring-emerald-500/10"
-                  : "border-neutral-200/60 hover:border-neutral-400"
+              className={`w-20 h-20 bg-neutral-50 border rounded-xl flex items-center justify-center p-2 cursor-pointer flex-shrink-0 transition-all duration-200 ${
+                (selectedImage === mainThumbnail || !selectedImage)
+                  ? "border-emerald-500 ring-2 ring-emerald-500/10 scale-[0.96]"
+                  : "border-neutral-200/70 hover:border-neutral-400"
               }`}
             >
               <img
                 src={mainThumbnail}
                 alt="main-thumb"
-                className="max-w-full max-h-full object-contain mix-blend-multiply"
+                className="max-w-full max-h-full object-contain mix-blend-multiply image-render-smooth"
               />
             </div>
 
-            {/* Loop through extra gallery images dynamically */}
+            {/* Loop through extra gallery images dynamically with sanitization rules */}
             {product.images?.map((imgUrl, idx) => {
+              if (!imgUrl) return null;
+
+              // Absolute path generation for the background arrays
               const fullImgUrl = imgUrl.startsWith("http")
                 ? imgUrl
-                : `${baseUrl}${imgUrl}`;
+                : `${baseUrl}${imgUrl.startsWith("/") ? imgUrl : `/${imgUrl}`}`;
 
               return (
                 <div
                   key={idx}
                   onClick={() => setSelectedImage(fullImgUrl)}
-                  className={`w-20 h-20 bg-neutral-50 border rounded-xl flex items-center justify-center p-2 cursor-pointer flex-shrink-0 transition-all ${
+                  className={`w-20 h-20 bg-neutral-50 border rounded-xl flex items-center justify-center p-2 cursor-pointer flex-shrink-0 transition-all duration-200 ${
                     selectedImage === fullImgUrl
-                      ? "border-emerald-500 ring-2 ring-emerald-500/10"
-                      : "border-neutral-200/60 hover:border-neutral-400"
+                      ? "border-emerald-500 ring-2 ring-emerald-500/10 scale-[0.96]"
+                      : "border-neutral-200/70 hover:border-neutral-400"
                   }`}
                 >
                   <img
                     src={fullImgUrl}
                     alt={`thumb-${idx}`}
-                    className="max-w-full max-h-full object-contain mix-blend-multiply"
+                    // ⚡ High quality rendering anchors injected inside components
+                    className="max-w-full max-h-full object-contain mix-blend-multiply transition-opacity duration-300"
+                    style={{ imageRendering: "-webkit-optimize-contrast" }}
+                    onError={(e) => { e.target.src = "/placeholder.png"; }}
                   />
                 </div>
               );
@@ -128,7 +142,6 @@ const ProductDetail = () => {
         {/* 📝 RIGHT PART: Product Specification Content Info */}
         <div className="lg:col-span-6 space-y-6">
           <div className="space-y-2">
-            {/* Dynamic Tag */}
             <span className="text-[10px] font-black tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md uppercase w-max block">
               Craventa Fresh Elite
             </span>
@@ -174,18 +187,19 @@ const ProductDetail = () => {
 
           {/* 📖 Rich Description Area */}
           <p className="text-xs md:text-sm text-neutral-600 leading-relaxed font-normal">
-            {product.long_description ||
+            {product.description ||
+              product.long_description ||
               product.short_description ||
               "No description available for this product."}
           </p>
 
-          {/* 🛒 Quantity Selection and Main Cart CTA Trigger */}
+          {/* 🛒 Quantity Selection and Custom Upgraded Cart CTA Trigger */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4 border-t border-neutral-100">
             {/* Quantity Counter box */}
-            <div className="flex items-center justify-between border border-neutral-200 rounded-xl px-3 py-2 bg-neutral-50/50 w-full sm:w-32">
+            <div className="flex items-center justify-between border border-neutral-200 rounded-xl px-3 py-2 bg-neutral-50/50 w-full sm:w-32 flex-shrink-0 h-[52px]">
               <button
                 onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-                className="text-lg font-bold text-neutral-500 hover:text-neutral-900 px-2 cursor-pointer transition-colors"
+                className="text-lg font-bold text-neutral-500 hover:text-neutral-900 px-2 cursor-pointer transition-colors select-none"
               >
                 -
               </button>
@@ -194,16 +208,16 @@ const ProductDetail = () => {
               </span>
               <button
                 onClick={() => setQuantity((prev) => prev + 1)}
-                className="text-lg font-bold text-neutral-500 hover:text-neutral-900 px-2 cursor-pointer transition-colors"
+                className="text-lg font-bold text-neutral-500 hover:text-neutral-900 px-2 cursor-pointer transition-colors select-none"
               >
                 +
               </button>
             </div>
 
-            {/* Heavy CTA Add to Cart Button */}
-            <button className="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-widest py-3.5 px-6 rounded-xl transition-all duration-300 shadow-md shadow-emerald-600/10 active:scale-[0.98] cursor-pointer text-center">
-              Add To Cart Portfolio
-            </button>
+            {/* ⚡ SYNCHRONIZED CTA BUTTON */}
+            <div className="flex-grow">
+              <AddtoCart stock={product.stock !== undefined ? product.stock : true} />
+            </div>
           </div>
 
           {/* 📦 Trust Highlights Badges Checklist */}
