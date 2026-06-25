@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import AddtoCart from "./AddtoCart";
+import AddtoWishlist from "./AddtoWishlist";
 
 // ⏳ LOCAL COUNTDOWN TIMER COMPONENT
 const SaleTimer = ({ isHorizontal = false }) => {
@@ -130,7 +131,7 @@ const ProductCard = ({ product, variant = "grid" }) => {
             </span>
           </div>
 
-          <AddtoCart stock={currentProduct.stock} />
+          <AddtoCart product={currentProduct} />
         </div>
       </div>
     );
@@ -170,25 +171,7 @@ const ProductCard = ({ product, variant = "grid" }) => {
         )}
 
         {/* Wishlist */}
-        <button
-          onClick={() => setIsWishlisted(!isWishlisted)}
-          className={`absolute p-2 bg-white/80 backdrop-blur-md border border-white/40 rounded-full shadow-sm z-30 transition-all duration-300 ${isPopular
-              ? "top-10 right-2.5"
-              : "top-2.5 right-2.5 opacity-0 group-hover:opacity-100"
-            }`}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            className={`w-3 h-3 ${isWishlisted
-                ? "fill-red-500 stroke-red-500"
-                : "fill-none stroke-neutral-800"
-              }`}
-            strokeWidth="2.5"
-          >
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-          </svg>
-        </button>
+        <AddtoWishlist product={currentProduct} />
 
         {/* Only Images Clickable */}
         <Link
@@ -239,7 +222,7 @@ const ProductCard = ({ product, variant = "grid" }) => {
           </div>
         </div>
 
-        <AddtoCart stock={currentProduct.stock} />
+        <AddtoCart product={currentProduct} />
       </div>
     </div>
   );

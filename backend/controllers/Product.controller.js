@@ -159,7 +159,7 @@ const getProduct = async (req, res) => {
         }
 
         // 🔍 DEBUG LOG: Database me hit marne se pehle filter dekhne ke liye
-        console.log("📥 DB Query Filter Object:", JSON.stringify(filter, null, 2));
+        // console.log("📥 DB Query Filter Object:", JSON.stringify(filter, null, 2));
 
         // Final database pull total calculation ke sath
         const [total, allProducts] = await Promise.all([
